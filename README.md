@@ -35,13 +35,6 @@ a face image quality model and uses it as an additional discriminative signal.
                 └──────────────────────────┘
 ```
 
-| Component | Model | Training |
-|---|---|---|
-| RGB branch | ResNet50, ImageNet-pretrained (`torchvision`) | fully fine-tuned |
-| Quality branch | AI-KD DifFIQA(R) face image quality model (IResNet-100 + MLP head) | frozen |
-| Face reconstruction | e4e encoder for StyleGAN2, FFHQ inversion checkpoint | offline, frozen |
-| Classifier | LayerNorm → MLP on the concatenated 1024-d features | trained |
-
 ## Repository structure
 
 ```
