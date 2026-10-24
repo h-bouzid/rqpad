@@ -335,7 +335,7 @@ If you use this work in your research, please cite:
 ```bibtex
 @inproceedings{bouzid2026rq,
   title={RQ-PAD: Reconstruction Quality for Robust Face Presentation Attack Detection},
-  author={Bouzid, Hamza and L{\'e}zoray, Olivier and Rosenberger, Christophe},
+  author={Bouzid, Hamza and Lézoray, Olivier and Rosenberger, Christophe},
   booktitle={International Conference on Pattern Recognition},
   pages={651--666},
   year={2026},
