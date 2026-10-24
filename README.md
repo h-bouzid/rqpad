@@ -16,8 +16,8 @@ Face anti-spoofing protects face recognition systems against presentation
 attacks such as printed photos, replays and masks. Detecting sophisticated
 and unseen attacks remains difficult for existing approaches.
 
-RQ-PAD relies on a generative model trained **only on bona fide faces**.
-Such a model reconstructs a realistic face whatever its input: for bona fide
+RQ-PAD relies on a generative model trained **only on bonafide faces**.
+Such a model reconstructs a realistic face whatever its input: for bonafide
 samples the reconstruction stays close to the original, while presentation
 attacks produce characteristic **discrepancies between the input and its
 reconstruction**. RQ-PAD measures this discrepancy in the embedding space of
@@ -29,7 +29,7 @@ a face image quality model and uses it as an additional discriminative signal.
                 └──────────────────────────┘                       │
                 ┌──────────────────────────┐                       ▼
  face (112²) ──►│ FIQA (frozen)            │──┐                ┌─────────┐
-                └──────────────────────────┘  ├─ real − recon ►│ concat  │──► MLP ──► bona fide / attack
+                └──────────────────────────┘  ├─ real − recon ►│ concat  │──► MLP ──► bonafide / attack
                 ┌──────────────────────────┐  │    (512-d)     └─────────┘
  e4e recon ────►│ FIQA (frozen, shared)    │──┘
                 └──────────────────────────┘
