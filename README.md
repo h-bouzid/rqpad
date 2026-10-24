@@ -168,7 +168,7 @@ Two arguments decide which experiment runs:
 | Training data | Train | Validation | Held-out test (intra only) |
 |---|---|---|---|
 | `--train_set hqwmca --protocol <csv>` | CSV `train` rows | CSV `dev` rows | CSV `eval` rows |
-| `--train_set siwmv2 --unseen_attack <attack>` | train-list bona fide + all other attacks (80%) | the other 20% | test-list bona fide + `<attack>` |
+| `--train_set siwmv2 --unseen_attack <attack>` | train-list bonafide + all other attacks (80%) | the other 20% | test-list bonafide + `<attack>` |
 | neither option | all videos (80%) | the other 20%, stratified | none |
 
 So, depending on what you want to run:
@@ -189,7 +189,7 @@ The split logic lives in `build_splits()` in `rqpad/datasets.py`.
 ### Smoke test
 
 Before a full run, check that your data layout is read correctly.
-`--max_videos 8` keeps at most 8 videos per split (half bona fide, half
+`--max_videos 8` keeps at most 8 videos per split (half bonafide, half
 attack), so the whole pipeline runs in a few minutes. The resulting metrics
 are meaningless; leave the option out for real experiments.
 
@@ -213,7 +213,7 @@ HQWMCA_ROOT=data/HQ-WMCA bash scripts/hqwmca_protocols.sh
 
 ### SiW-Mv2 (intra-dataset, leave-one-attack-out)
 
-Bona fide videos follow the official train/test lists. All attack types are
+Bonafide videos follow the official train/test lists. All attack types are
 used for training except `--unseen_attack`, which is reserved for testing.
 20% of the training videos are held out for validation.
 
@@ -320,8 +320,8 @@ and at the **video level**, where frame scores are averaged per video.
 |---|---|
 | AUC | area under the ROC curve on the test set |
 | EER | equal error rate on the test set |
-| APCER | attacks classified as bona fide |
-| BPCER | bona fide samples classified as attacks |
+| APCER | attacks classified as bonafide |
+| BPCER | bonafide samples classified as attacks |
 | HTER | (APCER + BPCER) / 2 at the threshold where the **validation** set reaches its EER |
 | ACER@0.5 | (APCER + BPCER) / 2 at a fixed 0.5 threshold |
 
