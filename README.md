@@ -346,9 +346,8 @@ If you use this work in your research, please cite:
 ## Acknowledgements
 
 This work builds on [encoder4editing](https://github.com/omertov/encoder4editing)
-for face reconstruction, [AI-KD](https://github.com/LSIbabnikz/AI-KD) for face
-image quality assessment and the IResNet backbone from
-[InsightFace](https://github.com/deepinsight/insightface).
+for face reconstruction and [AI-KD](https://github.com/LSIbabnikz/AI-KD) for face
+image quality assessment.
 
 ## License
 
