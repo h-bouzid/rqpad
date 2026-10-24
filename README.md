@@ -35,6 +35,13 @@ a face image quality model and uses it as an additional discriminative signal.
                 └──────────────────────────┘
 ```
 
+| Component | Model | Training |
+|---|---|---|
+| RGB branch | ResNet50, ImageNet-pretrained (`torchvision`) | fully fine-tuned |
+| Quality branch | AI-KD DifFIQA(R) face image quality model (IResNet-100 + MLP head) | frozen |
+| Face reconstruction | e4e encoder for StyleGAN2, FFHQ inversion checkpoint | offline, frozen |
+| Classifier | LayerNorm → MLP on the concatenated 1024-d features | trained |
+
 ## Repository structure
 
 ```
@@ -148,8 +155,43 @@ set. The defaults are the settings used in the paper (20 epochs, batch size
 128, Adam, learning rate 5e-7 halved every 2 epochs, seed 42), so only the
 experiment needs to be specified.
 
-**Smoke test.** Before launching a full run, check your data layout with a
-few videos per split:
+### Choosing an experiment
+
+Two arguments decide which experiment runs:
+
+1. **`--test_set` selects intra- or cross-dataset evaluation.** Leave it out
+   (or set it to the training dataset) to test on the held-out part of the
+   training dataset. Set it to the other dataset to test on **all** of that
+   dataset's videos.
+2. **`--protocol` / `--unseen_attack` select how the training dataset is split.**
+
+| Training data | Train | Validation | Held-out test (intra only) |
+|---|---|---|---|
+| `--train_set hqwmca --protocol <csv>` | CSV `train` rows | CSV `dev` rows | CSV `eval` rows |
+| `--train_set siwmv2 --unseen_attack <attack>` | train-list bona fide + all other attacks (80%) | the other 20% | test-list bona fide + `<attack>` |
+| neither option | all videos (80%) | the other 20%, stratified | none |
+
+So, depending on what you want to run:
+
+| Goal | Arguments |
+|---|---|
+| HQ-WMCA, official protocol | `--train_set hqwmca --protocol PROTOCOL-<name>.csv` |
+| SiW-Mv2, leave one attack out | `--train_set siwmv2 --unseen_attack <attack>` |
+| Train on all of HQ-WMCA, test on SiW-Mv2 | `--train_set hqwmca --test_set siwmv2` |
+| Train on HQ-WMCA protocol subsets, test on SiW-Mv2 | `--train_set hqwmca --test_set siwmv2 --protocol PROTOCOL-<name>.csv` |
+| Train on all of SiW-Mv2, test on HQ-WMCA | `--train_set siwmv2 --test_set hqwmca` |
+
+Pass the root folder of every dataset involved (`--hqwmca_root`,
+`--siwmv2_root`). An intra-dataset run without `--protocol` /
+`--unseen_attack` stops with an error rather than testing on training videos.
+The split logic lives in `build_splits()` in `rqpad/datasets.py`.
+
+### Smoke test
+
+Before a full run, check that your data layout is read correctly.
+`--max_videos 8` keeps at most 8 videos per split (half bona fide, half
+attack), so the whole pipeline runs in a few minutes. The resulting metrics
+are meaningless; leave the option out for real experiments.
 
 ```bash
 python train.py --train_set hqwmca --hqwmca_root data/HQ-WMCA \
@@ -193,6 +235,11 @@ python train.py --train_set hqwmca --test_set siwmv2 \
 
 python train.py --train_set siwmv2 --test_set hqwmca \
     --hqwmca_root data/HQ-WMCA --siwmv2_root data/SiW-Mv2
+
+# train/validate on the official HQ-WMCA train/dev subsets instead (eval rows unused)
+python train.py --train_set hqwmca --test_set siwmv2 \
+    --hqwmca_root data/HQ-WMCA --siwmv2_root data/SiW-Mv2 \
+    --protocol PROTOCOL-grand_test-curated.csv
 
 # both directions
 HQWMCA_ROOT=data/HQ-WMCA SIWMV2_ROOT=data/SiW-Mv2 bash scripts/cross_dataset.sh
