@@ -1,8 +1,0 @@
-torch>=1.13
-torchvision>=0.14
-numpy
-scikit-learn
-Pillow
-opencv-python
-matplotlib
-tqdm
